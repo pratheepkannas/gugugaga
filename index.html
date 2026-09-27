@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>EDA Lab Programs</title>
+<style>
+  :root{
+    --bg:#0f1117; --card:#1a1d27; --border:#2a2e3a; --text:#e6e8ee;
+    --muted:#9aa0ac; --accent:#6ea8fe; --code-bg:#0b0d13;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: light){
+    :root:not([data-theme="dark"]){
+      --bg:#f5f6f8; --card:#ffffff; --border:#e2e4ea; --text:#1b1e27;
+      --muted:#606573; --accent:#2563eb; --code-bg:#0d1117;
+    }
+  }
+  *{box-sizing:border-box;}
+  html{scroll-padding-top: env(safe-area-inset-top, 0px);}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  header{
+    padding:28px 20px 16px; text-align:center;
+    position:sticky; top:0; background:var(--bg); z-index:5;
+    border-bottom:1px solid var(--border);
+  }
+  header h1{margin:0 0 4px; font-size:1.4rem;}
+  header p{margin:0; color:var(--muted); font-size:0.9rem;}
+  .container{max-width:900px; margin:0 auto; padding:20px 16px 60px;}
+  .card{
+    background:var(--card); border:1px solid var(--border); border-radius:12px;
+    margin-bottom:20px; overflow:hidden;
+  }
+  .card-header{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:14px 18px; border-bottom:1px solid var(--border); gap:10px;
+  }
+  .card-header h2{
+    margin:0; font-size:1rem; font-weight:600; color:var(--text);
+  }
+  .copy-btn{
+    background:var(--accent); color:#fff; border:none; border-radius:8px;
+    padding:8px 14px; font-size:0.85rem; cursor:pointer; white-space:nowrap;
+    transition:opacity .15s;
+  }
+  .copy-btn:active{opacity:0.7;}
+  .copy-btn.copied{background:#2ecc71;}
+  pre{
+    margin:0; padding:16px 18px; overflow-x:auto; background:var(--code-bg);
+    color:#e6e8ee; font-size:0.85rem; line-height:1.5;
+  }
+  code{font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; white-space:pre;}
+</style>
+</head>
+<body>
+<header>
+  <h1>Exploratory Data Analysis — Lab Programs</h1>
+  <p>All 12 programs · tap Copy to copy the exact code</p>
+</header>
+<div class="container" id="app"></div>
+
+<script>
+const programs = [
+{title:"1. Correlation Coefficient and P-Value Analysis", code:
+`import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import pearsonr
+
+data = {
+'Hours_Studied': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+'Marks_Scored': [35, 40, 45, 50, 55, 65, 70, 75, 85, 90]
+}
+
+df = pd.DataFrame(data)
+print("Dataset:")
+print(df)
+
+corr_coeff, p_value = pearsonr(df['Hours_Studied'],
+df['Marks_Scored'])
+
+print("\\nCorrelation Coefficient (r):", round(corr_coeff, 4))
+print("P-Value:", round(p_value, 6))
+
+if p_value < 0.05:
+    print("\\nResult: Significant relationship exists.")
+else:
+    print("\\nResult: No significant relationship exists.")
+
+plt.figure(figsize=(8,5))
+plt.scatter(df['Hours_Studied'],
+df['Marks_Scored'],
+s=100)
+plt.title("Hours Studied vs Marks Scored")
+plt.xlabel("Hours Studied")
+plt.ylabel("Marks Scored")
+plt.grid(True)
+plt.show()`},
+
+{title:"2. Display Scatterplots", code:
+`import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+data = {
+'Study_Hours': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+'Marks': [35, 40, 45, 50, 55, 65, 70, 75, 85, 95]
+}
+
+df = pd.DataFrame(data)
+print("Dataset:")
+print(df)
+
+plt.figure(figsize=(8,5))
+sns.scatterplot(x='Study_Hours',
+y='Marks',
+data=df,
+s=100)
+plt.title("Scatter Plot: Study Hours vs Marks")
+plt.xlabel("Study Hours")
+plt.ylabel("Marks Obtained")
+plt.grid(True)
+plt.show()`},
+
+{title:"3. Linear Regression", code:
+`import pandas as pd
+from sklearn.linear_model import LinearRegression
+
+data = {
+'X':[1,2,3,4,5],
+'Y':[2,4,5,4,5]
+}
+
+df = pd.DataFrame(data)
+
+X = df[['X']]
+Y = df['Y']
+
+model = LinearRegression()
+model.fit(X,Y)
+
+print("Slope =", model.coef_[0])
+print("Intercept =", model.intercept_)
+print("Predicted Values =", model.predict(X))`},
+
+{title:"4. T-Test", code:
+`from scipy.stats import ttest_ind
+
+group1 = [12,15,14,10,13]
+group2 = [18,20,17,22,19]
+
+t_stat, p_value = ttest_ind(group1, group2)
+
+print("T-Statistic =", t_stat)
+print("P-Value =", p_value)`},
+
+{title:"5. Categorical Features", code:
+`import pandas as pd
+
+# Import dataset
+df = pd.read_csv("students.csv")
+
+# Display first 5 records
+print("Dataset:")
+print(df.head())
+
+# Analyze categorical feature - Gender
+print("\\nFrequency Distribution of Gender:")
+print(df['Gender'].value_counts())
+
+# Summary of categorical feature
+print("\\nCategorical Feature Summary:")
+print(df['Gender'].describe())`},
+
+{title:"6. Multiple Linear Regression (MLR) with Dummy Codes", code:
+`import pandas as pd
+from sklearn.linear_model import LinearRegression
+
+# Import dataset
+df = pd.read_csv("employee.csv")
+print("Original Dataset")
+print(df)
+
+# Convert categorical variable into dummy variable
+df = pd.get_dummies(df, columns=['Gender'], drop_first=True)
+print("\\nDataset After Dummy Coding")
+print(df)
+
+# Independent variables
+X = df[['Age', 'Experience', 'Gender_Male']]
+
+# Dependent variable
+Y = df['Salary']
+
+# Create model
+model = LinearRegression()
+
+# Train model
+model.fit(X, Y)
+
+# Prediction
+predicted_salary = model.predict(X)
+
+print("\\nRegression Coefficients:")
+print(model.coef_)
+
+print("\\nIntercept:")
+print(model.intercept_)
+
+print("\\nPredicted Salaries:")
+print(predicted_salary)`},
+
+{title:"7. Ordinary Least Squares (OLS) Regression", code:
+`import pandas as pd
+import matplotlib.pyplot as plt
+import statsmodels.api as sm
+
+data = {
+'Study_Hours': [1,2,3,4,5,6,7,8,9,10],
+'Marks': [35,40,45,50,55,65,70,75,85,95]
+}
+
+df = pd.DataFrame(data)
+print("Dataset:")
+print(df)
+
+X = df['Study_Hours']
+Y = df['Marks']
+
+X = sm.add_constant(X)
+
+model = sm.OLS(Y, X)
+result = model.fit()
+
+print("\\nOLS Regression Summary:")
+print(result.summary())
+
+predicted = result.predict(X)
+
+plt.figure(figsize=(8,5))
+plt.scatter(df['Study_Hours'], df['Marks'], color='blue',
+s=80, label='Actual Data')
+plt.plot(df['Study_Hours'], predicted, color='red', linewidth=2,
+label='Regression Line')
+plt.title("OLS Regression: Study Hours vs Marks")
+plt.xlabel("Study Hours")
+plt.ylabel("Marks")
+plt.legend()
+plt.grid(True)
+plt.show()`},
+
+{title:"8. Univariate Analysis", code:
+`import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+data = {
+'Marks': [35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95]
+}
+
+df = pd.DataFrame(data)
+print("Dataset:")
+print(df)
+
+print("\\nDescriptive Statistics:")
+print(df.describe())
+
+plt.figure(figsize=(8,5))
+sns.histplot(df['Marks'], bins=6, kde=True)
+plt.title("Histogram of Marks")
+plt.xlabel("Marks")
+plt.ylabel("Frequency")
+plt.grid(True)
+plt.show()
+
+plt.figure(figsize=(6,4))
+sns.boxplot(y=df['Marks'])
+plt.title("Box Plot of Marks")
+plt.show()`},
+
+{title:"9. Bivariate Statistics", code:
+`import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy.stats import pearsonr
+
+data = {
+'Study_Hours': [1,2,3,4,5,6,7,8,9,10],
+'Marks': [35,40,45,50,55,65,70,75,85,95]
+}
+
+df = pd.DataFrame(data)
+print("Dataset:")
+print(df)
+
+r, p = pearsonr(df['Study_Hours'], df['Marks'])
+print("\\nCorrelation Coefficient:", round(r,4))
+print("P-value:", round(p,6))
+
+# Plot
+plt.figure(figsize=(8,5))
+sns.scatterplot(x='Study_Hours', y='Marks', data=df, s=100)
+plt.title("Bivariate Analysis")
+plt.xlabel("Study Hours")
+plt.ylabel("Marks")
+plt.grid(True)
+plt.show()`},
+
+{title:"10. Multivariate Analysis", code:
+`import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+data = {
+'Study_Hours':[1,2,3,4,5,6,7,8,9,10],
+'Attendance':[60,65,68,72,75,80,85,88,92,95],
+'Marks':[35,40,45,50,55,65,70,75,85,95]
+}
+
+df = pd.DataFrame(data)
+print("Dataset")
+print(df)
+
+print("\\nCorrelation Matrix")
+print(df.corr())
+
+plt.figure(figsize=(6,4))
+sns.heatmap(df.corr(), annot=True, cmap="Blues")
+plt.title("Correlation Heatmap")
+plt.show()`},
+
+{title:"11. Univariate Statistics", code:
+`import pandas as pd
+
+data = {
+'Marks':[35,40,45,50,55,60,65,70,75,80,85,90,95]
+}
+
+df = pd.DataFrame(data)
+print("Dataset")
+print(df)
+
+print("\\nDescriptive Statistics")
+print(df.describe())`},
+
+{title:"12. One-Way ANOVA", code:
+`from scipy.stats import f_oneway
+
+group1 = [65,70,68,72,75]
+group2 = [78,80,82,79,81]
+group3 = [88,90,92,89,91]
+
+print("Group 1:", group1)
+print("Group 2:", group2)
+print("Group 3:", group3)
+
+F,p = f_oneway(group1, group2, group3)
+
+print("\\nF-Statistic:", round(F,4))
+print("P-value:", round(p,6))
+
+if p < 0.05:
+    print("Result: Significant difference exists among the groups.")
+else:
+    print("Result: No significant difference exists among the groups.")`}
+];
+
+const app = document.getElementById('app');
+programs.forEach((p, i) => {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `
+    <div class="card-header">
+      <h2>${p.title}</h2>
+      <button class="copy-btn" data-idx="${i}">Copy</button>
+    </div>
+    <pre><code>${p.code.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</code></pre>
+  `;
+  app.appendChild(card);
+});
+
+app.addEventListener('click', async (e) => {
+  if(!e.target.classList.contains('copy-btn')) return;
+  const idx = e.target.getAttribute('data-idx');
+  try{
+    await navigator.clipboard.writeText(programs[idx].code);
+    const btn = e.target;
+    const original = btn.textContent;
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(()=>{ btn.textContent = original; btn.classList.remove('copied'); }, 1500);
+  }catch(err){
+    alert('Copy failed. Please copy manually.');
+  }
+});
+</script>
+</body>
+</html>
